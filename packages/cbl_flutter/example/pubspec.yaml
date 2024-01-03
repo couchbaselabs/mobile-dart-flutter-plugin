@@ -1,0 +1,26 @@
+name: cbl_flutter_example
+description: A new Flutter project.
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.0.0
+
+dependencies:
+  cbl: 
+    path: '../../../packages/cbl'
+  cbl_flutter: 
+    path: '../../../packages/cbl_flutter'
+  cbl_flutter_ee: 
+    path: '../../../packages/cbl_flutter_ee'
+  cupertino_icons: ^1.0.2
+  flutter:
+    sdk: flutter
+  intl: ^0.19.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+flutter:
+  uses-material-design: true

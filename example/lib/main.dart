@@ -1,9 +1,13 @@
+import 'package:cbl_flutter/cbl_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:example/view_models/login_view_model.dart';
 import 'package:example/views/login_screen_view.dart';
 import 'package:provider/provider.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await CouchbaseLiteFlutter.init();
+
   runApp(
     MultiProvider(providers: [
       ChangeNotifierProvider(create: (_) => LoginViewModel()),

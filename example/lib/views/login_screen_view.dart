@@ -16,7 +16,6 @@ class LoginPageState extends State<LoginPage> {
 
   @override
   void initState() {
-    context.read<LoginViewModel>().initialize();
     super.initState();
   }
 
@@ -51,7 +50,8 @@ class LoginPageState extends State<LoginPage> {
                 // Example: Check if the username and password are not empty
                 if (_usernameController.text.isNotEmpty &&
                     _passwordController.text.isNotEmpty) {
-                  context.read<LoginViewModel>().login();
+                  context.read<LoginViewModel>().login(
+                      _usernameController.text, _passwordController.text);
 
                   Navigator.of(context).pushReplacement(
                     MaterialPageRoute(

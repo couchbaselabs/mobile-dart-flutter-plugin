@@ -1,7 +1,7 @@
 // ignore_for_file: avoid_equals_and_hash_code_on_mutable_classes
 
 import 'dart:async';
-import 'dart:ffi';
+import 'dart:ffi' if (dart.library.html) '';
 
 import '../../bindings.dart';
 import '../encoder.dart';

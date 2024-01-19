@@ -9,14 +9,14 @@ class DashboardViewModel with ChangeNotifier, DiagnosticableTreeMixin {
   final CouchbaseService _couchbaseService;
 
   Future<void> viewDocument(String name) async {
-    _couchbaseService.getListDocument(name);
+    //  _couchbaseService.getListDocument(name);
   }
 
   Future<void> addDocument(String name, String scope) async {
-    _couchbaseService.createCollection(name, scope);
+    //  _couchbaseService.createCollection(name, scope);
   }
 
   Future<void> deleteDocument(String name, String scope) async {
-    _couchbaseService.dropCollection(name, scope);
+    //  _couchbaseService.dropCollection(name, scope);
   }
 }

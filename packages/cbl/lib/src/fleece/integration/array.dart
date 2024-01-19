@@ -1,10 +1,10 @@
 import 'dart:async';
-import 'dart:ffi';
+import 'dart:ffi' if (dart.library.html) '';
 
 import 'package:collection/collection.dart';
 
 import '../../bindings.dart';
-import '../../support/ffi.dart';
+import '../../support/ffi.dart' if (dart.library.html) '';
 import '../../support/utils.dart';
 import '../encoder.dart';
 import 'collection.dart';

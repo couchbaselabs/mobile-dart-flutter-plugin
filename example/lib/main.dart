@@ -7,7 +7,7 @@ import 'package:provider/provider.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await CouchbaseLiteFlutter.init();
+  //await CouchbaseLiteFlutter.init();
 
   runApp(const App());
 }

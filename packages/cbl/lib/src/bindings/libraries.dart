@@ -1,9 +1,9 @@
 // ignore_for_file: non_constant_identifier_names
 
-import 'dart:ffi';
+import 'dart:ffi' if (dart.library.html) '';
 import 'dart:io';
 
-import 'package:ffi/ffi.dart';
+import 'package:ffi/ffi.dart' if (dart.library.html) '';
 
 class LibraryConfiguration {
   LibraryConfiguration({

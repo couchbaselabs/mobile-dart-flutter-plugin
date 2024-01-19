@@ -1,4 +1,4 @@
-import 'dart:ffi';
+import 'dart:ffi' if (dart.library.html) '';
 
 import '../bindings.dart' as bindings;
 import 'errors.dart';

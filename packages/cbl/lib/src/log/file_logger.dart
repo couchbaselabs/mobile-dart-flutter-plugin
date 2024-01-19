@@ -3,7 +3,7 @@
 import 'dart:io';
 
 import '../bindings.dart';
-import '../support/ffi.dart';
+import '../support/ffi.dart' if (dart.library.html) '';
 import 'logger.dart';
 
 /// The configuration for log files.

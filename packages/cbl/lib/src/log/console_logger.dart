@@ -1,4 +1,4 @@
-import '../support/ffi.dart';
+import '../support/ffi.dart' if (dart.library.html) '';
 import 'logger.dart';
 
 /// Logger for writing log messages to the system console.

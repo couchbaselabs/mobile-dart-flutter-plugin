@@ -1,4 +1,4 @@
-import 'dart:ffi';
+import 'dart:ffi' if (dart.library.html) '';
 
 import '../bindings.dart';
 import '../fleece/containers.dart' as fl;
@@ -6,7 +6,7 @@ import '../fleece/containers.dart';
 import '../fleece/encoder.dart';
 import '../fleece/integration/integration.dart';
 import '../support/encoding.dart';
-import '../support/ffi.dart';
+import '../support/ffi.dart' if (dart.library.html) '';
 import '../support/native_object.dart';
 import 'document.dart';
 

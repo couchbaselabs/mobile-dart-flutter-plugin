@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'dart:ffi';
+import 'dart:ffi' if (dart.library.html) '';
 import 'dart:io';
 
 import 'package:collection/collection.dart';
@@ -17,7 +17,7 @@ import '../fleece/dict_key.dart';
 import '../query/index/index.dart';
 import '../support/async_callback.dart';
 import '../support/errors.dart';
-import '../support/ffi.dart';
+import '../support/ffi.dart' if (dart.library.html) '';
 import '../support/listener_token.dart';
 import '../support/resource.dart';
 import '../support/streams.dart';

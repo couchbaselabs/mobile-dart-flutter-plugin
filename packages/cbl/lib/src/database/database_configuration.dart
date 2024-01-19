@@ -10,7 +10,7 @@ import '../bindings.dart';
 import '../service/cbl_service_api.dart';
 import '../service/cbl_worker.dart';
 import '../support/edition.dart';
-import '../support/ffi.dart';
+import '../support/ffi.dart' if (dart.library.html) '';
 import '../support/isolate.dart';
 import 'database.dart';
 

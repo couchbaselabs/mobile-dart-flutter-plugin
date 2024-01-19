@@ -4,7 +4,7 @@ import '../bindings.dart' hide LibrariesConfiguration;
 import '../document/common.dart';
 import '../fleece/integration/integration.dart';
 import 'errors.dart';
-import 'ffi.dart';
+import 'ffi.dart' if (dart.library.html) 'web.dart';
 import 'tracing.dart';
 
 class InitContext {

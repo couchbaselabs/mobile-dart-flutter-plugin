@@ -1,10 +1,10 @@
 // ignore_for_file: avoid_equals_and_hash_code_on_mutable_classes
 
 import 'dart:convert';
-import 'dart:ffi';
+import 'dart:ffi' if (dart.library.html) '';
 import 'dart:typed_data';
 
-import 'package:ffi/ffi.dart';
+import 'package:ffi/ffi.dart' if (dart.library.html) '';
 
 import 'bindings.dart';
 import 'fleece.dart';

@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'dart:ffi';
+import 'dart:ffi' if (dart.library.html) '';
 import 'dart:typed_data';
 
 import '../bindings.dart';
@@ -10,7 +10,7 @@ import '../fleece/decoder.dart';
 import '../fleece/dict_key.dart';
 import '../fleece/encoder.dart';
 import '../fleece/integration/integration.dart';
-import '../support/ffi.dart';
+import '../support/ffi.dart' if (dart.library.html) '';
 import 'array.dart';
 import 'blob.dart';
 import 'dictionary.dart';

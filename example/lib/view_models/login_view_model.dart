@@ -1,24 +1,22 @@
-import 'package:cbl/cbl.dart';
+import 'dart:async';
+import 'package:example/services/couchbase_service.dart';
 import 'package:flutter/foundation.dart';
 
 class LoginViewModel with ChangeNotifier, DiagnosticableTreeMixin {
-  late Replicator _replicator;
+  LoginViewModel({required CouchbaseService couchbaseService})
+      : _couchbaseService = couchbaseService;
+
+  final CouchbaseService _couchbaseService;
 
   Future<void> login(String username, String password) async {
-    _replicator = await Replicator.create(
-      ReplicatorConfiguration(
-        database: await Database.openAsync('test'),
-        target: UrlEndpoint(
-          Uri.parse('ws://localhost:4984/cake31'),
-        ),
-        authenticator:
-            BasicAuthenticator(username: username, password: password),
-      ),
-    );
-    _replicator.start();
-
-    _replicator.addChangeListener((change) {
-      print(change.status.activity.name);
+    _couchbaseService.startReplicator(<String, String>{
+      'url': 'ws://localhost/sync_gateway',
+      'username': username,
+      'password': password,
     });
+  }
+
+  Future<void> logout() async {
+    _couchbaseService.logout();
   }
 }

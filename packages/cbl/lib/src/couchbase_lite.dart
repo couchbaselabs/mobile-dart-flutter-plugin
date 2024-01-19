@@ -2,7 +2,7 @@ import 'dart:isolate';
 
 import 'database/database.dart';
 import 'log.dart';
-import 'support/ffi.dart';
+import 'support/ffi.dart' if (dart.library.html) '';
 import 'support/isolate.dart';
 import 'support/tracing.dart';
 import 'tracing.dart';

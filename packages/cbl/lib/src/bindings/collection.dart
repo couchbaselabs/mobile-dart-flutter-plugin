@@ -2,7 +2,7 @@
 // ignore_for_file: non_constant_identifier_names, avoid_redundant_argument_values, avoid_private_typedef_functions, camel_case_types
 
 import 'dart:convert';
-import 'dart:ffi';
+import 'dart:ffi' if (dart.library.html) '';
 import 'dart:typed_data';
 
 import 'async_callback.dart';

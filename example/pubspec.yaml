@@ -42,6 +42,7 @@ dependencies:
     path: '../packages/cbl_flutter'
   cbl_flutter_ee: 
     path: '../packages/cbl_flutter_ee'
+  rxdart: ^0.27.7
 
 dev_dependencies:
   flutter_test:

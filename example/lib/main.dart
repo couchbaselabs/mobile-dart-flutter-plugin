@@ -6,11 +6,15 @@ import 'package:intl/intl.dart';
 
 late Database database;
 late Collection chatMessages;
+late Replicator replicator;
 late ChatMessageRepository chatMessageRepository;
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await CouchbaseLiteFlutter.init();
+  
   database = await Database.openAsync('example');
+
   chatMessages = await database.createCollection('chatMessages');
   await chatMessages.createIndex(
     'type+createdAt',
@@ -19,7 +23,39 @@ Future<void> main() async {
       ValueIndexItem.property('createdAt'),
     ]),
   );
+
+  final targetURL = Uri.parse('ws://localhost:4984/todo');
+
+  final targetEndpoint = UrlEndpoint(targetURL);
+
+  final config =  ReplicatorConfiguration(target: targetEndpoint);
+
+
+  config.replicatorType = ReplicatorType.pushAndPull;
+
+  config.enableAutoPurge = false;
+
+  config.continuous = true;
+
+  config.authenticator = BasicAuthenticator(username: "bob",
+                                          password: "12345");
+
+  config.addCollection(chatMessages, CollectionConfiguration());
+
+  replicator = await Replicator.create(config);
+
+  replicator.addChangeListener((change) {
+    if (change.status.activity == ReplicatorActivityLevel.stopped) {
+      print('Replication stopped');
+    } else {
+      print('Replicator is currently: ${change.status.activity.name}');
+    }
+  });
+
+  await replicator.start();
+
   chatMessageRepository = ChatMessageRepository(database, chatMessages);
+
   runApp(const MyApp());
 }
 class MyApp extends StatelessWidget {

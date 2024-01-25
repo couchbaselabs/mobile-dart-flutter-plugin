@@ -22,7 +22,7 @@
         "CRUD",
         "Changes",
         "Cache",
-	"Replicate"
+	      "Replicate"
       ]
     },
     "error": {
@@ -57,4 +57,4 @@
   "auth": {},
   "replicator": {},
   "unsupported": {}
-}
+}s

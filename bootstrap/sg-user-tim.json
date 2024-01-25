@@ -1,11 +1,20 @@
 {
     "username":"tim",
     "password":"12345",
+<<<<<<< Updated upstream
     "admin_roles": ["user"],
+=======
+    "admin_roles":["user"],
+>>>>>>> Stashed changes
     "collection_access":{
                         "chat":{
                                     "messages":{
                                                     "admin_channels":["*"]
                                                 }
+<<<<<<< Updated upstream
                         }}            
+=======
+                               }             
+                        }
+>>>>>>> Stashed changes
 }

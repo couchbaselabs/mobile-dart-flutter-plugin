@@ -2,14 +2,6 @@
   "name": "examplechat",
   "bucket": "message",
   "scopes": {
-<<<<<<< Updated upstream
-    "chat": {
-      "collections":{
-      "messages": {
-        "sync": "function(doc){channel(doc.userId);}"
-      }}
-  }},
-=======
               "chat": {
                 "collections":{
                                 "message": {
@@ -18,7 +10,6 @@
                               }
                       }
             },
->>>>>>> Stashed changes
   "delta_sync": {
     "enabled": true,
     "rev_max_age_seconds": 86400

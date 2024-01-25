@@ -1,11 +1,7 @@
 {
     "username":"bob",
     "password":"12345",
-<<<<<<< Updated upstream
-    "admin_roles": ["user"],
-=======
     "admin_roles":["user"],
->>>>>>> Stashed changes
     "collection_access":{
                     "chat":{
                             "messages":{

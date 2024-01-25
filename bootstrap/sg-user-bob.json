@@ -4,7 +4,7 @@
     "admin_roles":["user"],
     "collection_access":{
                     "chat":{
-                            "messages":{
+                            "message":{
                                          "admin_channels":["*"]
                                         }
                                 }

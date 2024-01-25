@@ -1,7 +1,7 @@
 #!/bin/bash
 username="Administrator"
 password="password"
-sgDb="db"
+sgDb="examplechat"
 sgAdminHost="localhost:4985"
 vb=" -v "
 

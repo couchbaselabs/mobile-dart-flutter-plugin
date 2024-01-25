@@ -1,10 +1,11 @@
 {
     "username":"tim",
     "password":"12345",
+    "admin_roles": ["user"],
     "collection_access":{
                         "chat":{
-                                    "message":{
+                                    "messages":{
                                                     "admin_channels":["*"]
                                                 }
-                        }             
+                        }}            
 }

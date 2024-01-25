@@ -1,13 +1,13 @@
 {
-  "name": "db",
+  "name": "examplechat",
   "bucket": "message",
   "scopes": {
     "chat": {
       "collections":{
-      "message": {
+      "messages": {
         "sync": "function(doc){channel(doc.userId);}"
-      }
-  },
+      }}
+  }},
   "delta_sync": {
     "enabled": true,
     "rev_max_age_seconds": 86400

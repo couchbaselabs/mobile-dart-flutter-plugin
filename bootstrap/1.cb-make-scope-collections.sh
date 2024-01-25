@@ -6,7 +6,7 @@ password="password"
 cbBucket="message" 
 cbScope="chat"
 cbHost="localhost:8091"
-sgDb="db"
+sgDb="examplechat"
 sgAdminHost="localhost:4985"
 vb=" -v "
 
@@ -16,7 +16,7 @@ curl -u $username:$password $vb -X POST http://$cbHost/pools/default/buckets/$cb
 sleep 2
 
 # Define the list of collection names
-collections=("message")
+collections=("messages")
 
 # Iterate through the collections and make the corresponding API calls
 for collection in "${collections[@]}"

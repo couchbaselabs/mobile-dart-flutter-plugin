@@ -15,7 +15,7 @@ Future<void> main() async {
   
   database = await Database.openAsync('example');
 
-  chatMessages = await database.createCollection('chatMessages');
+  chatMessages = await database.createCollection('message','chat');
   await chatMessages.createIndex(
     'type+createdAt',
     ValueIndex([
@@ -24,7 +24,7 @@ Future<void> main() async {
     ]),
   );
 
-  final targetURL = Uri.parse('ws://localhost:4984/todo');
+  final targetURL = Uri.parse('ws://localhost:4984/db');
 
   final targetEndpoint = UrlEndpoint(targetURL);
 
@@ -212,6 +212,7 @@ class ChatMessageRepository {
   Future<ChatMessage> createChatMessage(String message) async {
     final doc = MutableDocument({
       'type': 'chatMessage',
+      'userId':'bob',
       'createdAt': DateTime.now(),
       'message': message,
     });

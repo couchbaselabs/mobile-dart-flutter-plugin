@@ -13,6 +13,8 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await CouchbaseLiteFlutter.init();
 
+  await Database.remove('examplechat');
+
   database = await Database.openAsync('examplechat');
 
   chatMessages = await database.createCollection('messages', 'chat');

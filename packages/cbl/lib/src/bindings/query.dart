@@ -1,7 +1,7 @@
 // ignore: lines_longer_than_80_chars
 // ignore_for_file: avoid_redundant_argument_values, avoid_private_typedef_functions, camel_case_types
 
-import 'dart:ffi' if (dart.library.html) '';
+import 'dart:ffi' if (dart.library.html) 'package:web_ffi/web_ffi.dart';
 
 import 'async_callback.dart';
 import 'base.dart';

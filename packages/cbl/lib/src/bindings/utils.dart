@@ -1,6 +1,7 @@
-import 'dart:ffi' if (dart.library.html) '';
+import 'dart:ffi' if (dart.library.html) 'package:web_ffi/web_ffi.dart';
 
-import 'package:ffi/ffi.dart' if (dart.library.html) '';
+import 'package:ffi/ffi.dart'
+    if (dart.library.html) 'package:web_ffi/web_ffi.dart';
 
 import 'fleece.dart';
 import 'global.dart';

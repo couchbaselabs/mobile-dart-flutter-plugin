@@ -1,8 +1,8 @@
 // ignore_for_file: avoid_equals_and_hash_code_on_mutable_classes
 
-import 'dart:ffi' if (dart.library.html) '';
+import 'dart:ffi' if (dart.library.html) 'package:web_ffi/web_ffi.dart';
 
-import 'ffi.dart' if (dart.library.html) '';
+import 'ffi.dart' if (dart.library.html) 'package:web_ffi/web_ffi.dart';
 
 /// Binds the lifetime of a native CBL ref counted object to a Dart object.
 ///

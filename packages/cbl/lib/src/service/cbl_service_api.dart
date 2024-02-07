@@ -1,7 +1,7 @@
 // ignore: lines_longer_than_80_chars
 // ignore_for_file: prefer_constructors_over_static_methods,prefer_void_to_null
 
-import 'dart:ffi' if (dart.library.html) '';
+import 'dart:ffi' if (dart.library.html) 'package:web_ffi/web_ffi.dart';
 
 import 'package:meta/meta.dart';
 
@@ -16,7 +16,8 @@ import '../replication/document_replication.dart';
 import '../replication/endpoint.dart';
 import '../replication/replicator.dart';
 import '../support/encoding.dart';
-import '../support/ffi.dart' if (dart.library.html) '';
+import '../support/ffi.dart'
+    if (dart.library.html) 'package:web_ffi/web_ffi.dart';
 import '../support/utils.dart';
 import '../tracing.dart';
 import 'channel.dart';

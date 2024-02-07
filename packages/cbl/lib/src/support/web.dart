@@ -99,10 +99,5 @@ extension on LibraryConfiguration {
 }
 
 extension CblFfiLibraries on LibrariesConfiguration {
-  bindings.LibrariesConfiguration toCblFfi() => bindings.LibrariesConfiguration(
-        enterpriseEdition: enterpriseEdition,
-        directory: directory,
-        cbl: cbl._toCblFfi(),
-        cblDart: cblDart._toCblFfi(),
-      );
+  void toCblFfi() => null;
 }

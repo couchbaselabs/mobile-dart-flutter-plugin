@@ -1,9 +1,10 @@
 import 'dart:collection';
-import 'dart:ffi' if (dart.library.html) '';
+import 'dart:ffi' if (dart.library.html) 'package:web_ffi/web_ffi.dart';
 import 'dart:math';
 
 import '../bindings.dart';
-import '../support/ffi.dart' if (dart.library.html) '';
+import '../support/ffi.dart'
+    if (dart.library.html) 'package:web_ffi/web_ffi.dart';
 import 'encoder.dart';
 
 final _dictBinds = cblBindings.fleece.dict;

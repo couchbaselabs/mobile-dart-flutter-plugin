@@ -1,5 +1,5 @@
 import 'dart:collection';
-import 'dart:ffi' if (dart.library.html) '';
+import 'dart:ffi' if (dart.library.html) 'package:web_ffi/web_ffi.dart';
 import 'dart:isolate';
 
 import 'package:collection/collection.dart';

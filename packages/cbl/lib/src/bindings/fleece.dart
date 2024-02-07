@@ -2,9 +2,10 @@
 // ignore_for_file: avoid_redundant_argument_values, avoid_positional_boolean_parameters, avoid_private_typedef_functions, camel_case_types
 
 import 'dart:convert';
-import 'dart:ffi' if (dart.library.html) '';
+import 'dart:ffi' if (dart.library.html) 'package:web_ffi/web_ffi.dart';
 
-import 'package:ffi/ffi.dart' if (dart.library.html) '';
+import 'package:ffi/ffi.dart'
+    if (dart.library.html) 'package:web_ffi/web_ffi.dart';
 
 import 'base.dart';
 import 'bindings.dart';

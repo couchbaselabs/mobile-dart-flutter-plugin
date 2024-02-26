@@ -1,0 +1,15 @@
+export 'src/database/collection.dart';
+export 'src/database/database.dart';
+export 'src/database/database_configuration.dart';
+export 'src/database/scope.dart';
+export 'src/document/array.dart';
+export 'src/document/blob.dart';
+export 'src/document/dictionary.dart';
+export 'src/document/document.dart';
+export 'src/document/fragment.dart';
+export 'src/replication/authenticator.dart';
+export 'src/replication/configuration.dart';
+export 'src/replication/conflict_resolver.dart';
+export 'src/replication/endpoint.dart';
+export 'src/replication/replicator.dart';
+export 'src/support/utils.dart';

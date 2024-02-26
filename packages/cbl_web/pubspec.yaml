@@ -1,4 +1,4 @@
-name: cbl_flutter_web
+name: cbl_web
 publish_to: none
 description: >-
   Flutter Plugin for Couchbase Lite, an embedded, NoSQL JSON Document Style

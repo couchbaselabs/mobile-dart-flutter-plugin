@@ -1,3 +1,4 @@
+export 'src/cbl_web_websocket.dart';
 export 'src/database/collection.dart';
 export 'src/database/database.dart';
 export 'src/database/database_configuration.dart';

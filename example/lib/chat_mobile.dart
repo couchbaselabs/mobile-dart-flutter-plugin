@@ -4,22 +4,96 @@ import 'package:cbl_flutter_multiplatform/cbl_flutter_multiplatform.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-late ChatMessageRepository chatMessageRepository;
-
 class ChatMessagesPage extends StatefulWidget {
   const ChatMessagesPage({super.key});
+
   @override
   State<ChatMessagesPage> createState() => _ChatMessagesPageState();
 }
 
 class _ChatMessagesPageState extends State<ChatMessagesPage> {
-  List<ChatMessage> _chatMessages = [];
-  late StreamSubscription _chatMessagesSub;
   @override
   void initState() {
     super.initState();
+  }
+
+  Future<ChatMessageRepository> setup() async {
+    late Database database;
+    late Collection chatMessages;
+    late Replicator replicator;
+    late ChatMessageRepository chatMessageRepository;
+
+    database = await Database.openAsync('examplechat');
+
+    chatMessages = await database.createCollection('message', 'chat');
+
+    // update this with your device ip
+    final targetURL = Uri.parse('ws://192.168.0.116:4984/examplechat');
+
+    final targetEndpoint = UrlEndpoint(targetURL);
+
+    final config = ReplicatorConfiguration(target: targetEndpoint);
+
+    config.replicatorType = ReplicatorType.pushAndPull;
+
+    config.enableAutoPurge = false;
+
+    config.continuous = true;
+
+    config.authenticator =
+        BasicAuthenticator(username: "bob", password: "12345");
+
+    config.addCollection(chatMessages, CollectionConfiguration());
+
+    replicator = await Replicator.create(config);
+
+    replicator.addChangeListener((change) {
+      if (change.status.activity == ReplicatorActivityLevel.stopped) {
+        print('Replication stopped');
+      } else {
+        print('Replicator is currently: ${change.status.activity.name}');
+      }
+    });
+
+    await replicator.start();
+
+    chatMessageRepository = ChatMessageRepository(database, chatMessages);
+
+    return chatMessageRepository;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: FutureBuilder<ChatMessageRepository>(
+          future: setup(),
+          builder: (context, snapshot) => snapshot.data == null
+              ? const Center(child: CircularProgressIndicator())
+              : ChatMessagesPageMobile(
+                  repository: snapshot.data,
+                )),
+    );
+  }
+}
+
+class ChatMessagesPageMobile extends StatefulWidget {
+  const ChatMessagesPageMobile({this.repository, super.key});
+  final ChatMessageRepository? repository;
+
+  @override
+  State<ChatMessagesPageMobile> createState() => _ChatMessagesPageMobileState();
+}
+
+class _ChatMessagesPageMobileState extends State<ChatMessagesPageMobile> {
+  List<ChatMessage> _chatMessages = [];
+  late StreamSubscription _chatMessagesSub;
+
+  @override
+  void initState() {
+    super.initState();
+
     _chatMessagesSub =
-        chatMessageRepository.allChatMessagesStream().listen((chatMessages) {
+        widget.repository!.allChatMessagesStream().listen((chatMessages) {
       setState(() => _chatMessages = chatMessages);
     });
   }
@@ -46,7 +120,7 @@ class _ChatMessagesPageState extends State<ChatMessagesPage> {
               ),
             ),
             const Divider(height: 0),
-            _ChatMessageForm(onSubmit: chatMessageRepository.createChatMessage)
+            _ChatMessageForm(onSubmit: widget.repository!.createChatMessage)
           ]),
         ),
       );

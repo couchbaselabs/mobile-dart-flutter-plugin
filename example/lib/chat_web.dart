@@ -1,10 +1,8 @@
-import 'dart:async';
+import 'dart:convert';
 
 import 'package:cbl_flutter_multiplatform/cbl_flutter_multiplatform.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-
-late ChatMessageRepository chatMessageRepository;
 
 class ChatMessagesPage extends StatefulWidget {
   const ChatMessagesPage({super.key});
@@ -13,41 +11,80 @@ class ChatMessagesPage extends StatefulWidget {
 }
 
 class _ChatMessagesPageState extends State<ChatMessagesPage> {
+  final CblWebSocket _cblWebSocket = CblWebSocket();
+  final ScrollController _scrollController = ScrollController();
+
+  List<dynamic> messages = [];
+
   @override
   void initState() {
     super.initState();
-  }
+    _cblWebSocket.createCollection('message', 'chat');
 
-  @override
-  void dispose() {
-    super.dispose();
+    _cblWebSocket.connect(
+        url: 'ws://192.168.0.116:4984/examplechat',
+        username: 'bob',
+        password: '12345');
+
+    _cblWebSocket.startListening((message) {
+      if ((message != null || message != '') && message is String) {
+        List<dynamic> decodedMsg = json.decode(message);
+
+        setState(() {
+          messages.addAll(decodedMsg);
+        });
+
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (_scrollController.hasClients) {
+            _scrollController
+                .jumpTo(_scrollController.position.maxScrollExtent);
+          } else {
+            setState(() => {});
+          }
+        });
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) => Scaffold(
-        appBar: AppBar(title: Text('test')),
         body: SafeArea(
           child: Column(children: [
             Expanded(
               child: ListView.builder(
-                reverse: true,
-                itemCount: 0,
+                reverse: false,
+                controller: _scrollController,
+                itemCount: messages.length,
                 itemBuilder: (context, index) {
-                  final chatMessage = CblChatMessage(null);
-                  return ChatMessageTile(chatMessage: chatMessage);
+                  final item = messages[index];
+                  return ChatMessageTile(
+                    message: item.containsKey('doc')
+                        ? item['doc']['chatMessage']
+                        : '-',
+                    createdAt: item.containsKey('doc')
+                        ? item['doc']['createdAt']
+                        : DateFormat("yyyy-MM-ddTHH:mm:ss.SSSSSS")
+                            .format(DateTime.now()),
+                  );
                 },
               ),
             ),
             const Divider(height: 0),
-            _ChatMessageForm(onSubmit: chatMessageRepository.createChatMessage)
+            _ChatMessageForm(
+              onSubmit: (message) {},
+              cblWebSocket: _cblWebSocket,
+            )
           ]),
         ),
       );
 }
 
 class ChatMessageTile extends StatelessWidget {
-  const ChatMessageTile({super.key, required this.chatMessage});
-  final ChatMessage chatMessage;
+  const ChatMessageTile({this.message, required this.createdAt, super.key});
+
+  final String? message;
+  final String createdAt;
+
   @override
   Widget build(BuildContext context) => Padding(
         padding: const EdgeInsets.all(20),
@@ -55,20 +92,22 @@ class ChatMessageTile extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              DateFormat.yMd()
-                  .add_jm()
-                  .format(chatMessage.createdAt ?? DateTime.now()),
+              DateFormat.yMd().add_jm().format(DateTime.parse(createdAt)),
               style: Theme.of(context).textTheme.bodySmall,
             ),
             const SizedBox(height: 5),
-            Text(chatMessage.chatMessage.toString())
+            Text(message ?? '')
           ],
         ),
       );
 }
 
 class _ChatMessageForm extends StatefulWidget {
-  const _ChatMessageForm({required this.onSubmit});
+  const _ChatMessageForm({
+    required this.cblWebSocket,
+    required this.onSubmit,
+  });
+  final CblWebSocket cblWebSocket;
   final ValueChanged<String> onSubmit;
   @override
   _ChatMessageFormState createState() => _ChatMessageFormState();
@@ -77,6 +116,7 @@ class _ChatMessageForm extends StatefulWidget {
 class _ChatMessageFormState extends State<_ChatMessageForm> {
   late final TextEditingController _messageController;
   late final FocusNode _messageFocusNode;
+
   @override
   void initState() {
     super.initState();
@@ -96,6 +136,17 @@ class _ChatMessageFormState extends State<_ChatMessageForm> {
     if (message.isEmpty) {
       return;
     }
+
+    Map<String, Object> doc = {
+      'type': 'chatMessage',
+      'createdAt':
+          DateFormat("yyyy-MM-ddTHH:mm:ss.SSSSSS").format(DateTime.now()),
+      'userId': 'bob',
+      'chatMessage': message,
+    };
+
+    widget.cblWebSocket.saveDocument(doc);
+
     widget.onSubmit(message);
     _messageController.clear();
     _messageFocusNode.requestFocus();
@@ -127,45 +178,4 @@ class _ChatMessageFormState extends State<_ChatMessageForm> {
           ],
         ),
       );
-}
-
-abstract class ChatMessage {
-  String get id;
-  String? get chatMessage;
-  DateTime? get createdAt;
-}
-
-class CblChatMessage extends ChatMessage {
-  CblChatMessage(this.dict);
-  final Map<String, Object?>? dict;
-  @override
-  String get id => '';
-  @override
-  DateTime? get createdAt => null;
-  @override
-  String? get chatMessage => null;
-}
-
-extension DictionaryDocumentIdExt on DictionaryInterface {
-  String get documentId {
-    final self = this;
-    return self is Document ? self.id : self.value('id')!;
-  }
-}
-
-class ChatMessageRepository {
-  ChatMessageRepository(this.database, this.collection);
-  final Database database;
-  final Collection collection;
-
-  Future<ChatMessage> createChatMessage(String message) async {
-    final doc = MutableDocument({
-      'type': 'chatMessage',
-      'createdAt': DateTime.now(),
-      'userId': 'bob',
-      'chatMessage': message,
-    });
-    await collection.saveDocument(doc);
-    return CblChatMessage(doc.toPlainMap());
-  }
 }

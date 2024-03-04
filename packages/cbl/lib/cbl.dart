@@ -1,3 +1,4 @@
+export 'src/cbl_web_websocket.dart';
 export 'src/couchbase_lite.dart';
 export 'src/database.dart';
 export 'src/document.dart';

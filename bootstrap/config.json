@@ -1,0 +1,23 @@
+{
+"cb":{
+    "host":"localhost",
+    "port":"8091",
+    "hostSecure":false,
+    "adminUsername":"Administrator",
+    "adminPassword":"password",
+    "bucketName":"message", 
+    "scopeName":"chat",
+    "collectionName":"message"
+    },
+"sg":{
+    "hostUrl":"localhost",
+    "rbacUser":"syncGatewayUser",
+    "rbacUserPassword":"password",
+    "dbName":"examplechat",
+    "adminPort":"4985",
+    "hostSecure":false,
+    "dbConfigJsonFile":"sgDb.json",
+    "dbUserList":["bob","tim"]
+    },
+"debug": false
+}

@@ -1,35 +1,46 @@
 #!/usr/bin/python3
 import sys
 import json
+import os
 import urllib.request
 from time import sleep
 
-
 class WORK():
 
-    cbHost = "localhost"
+    ##CB INFO
+    cbHostSecure = "http"
+    cbHost = "127.0.0.1"
     cbPort = "8091"
     cbAdminUsername = "Administrator"
     cbAdminPassword = "password"
-    sgHostUrl = "127.0.0.1"
     cbBucketName = "message"
-    cbScopeName = "chat"
-    cbCollectionName = "message"
+    ##CB RBAC USER FOR SYNC GATEWAY
     sgRbacUser = "syncGatewayUser"
     sgRbacUserPassword = "password"
-    sgDbName = "examplechat"
-    sgAdminPort = "4985"
+    
+    ##SG INFO
     sgDbConfigJsonFile = "sgDb.json"
-    sgDbUserList = ["bob","tim"]
     sgHostSecure = "http"
+    sgHostUrl = "127.0.0.1"
+    sgAdminPort = "4985"
+    sgDbName = "examplechat"
+    sgConfigData = {}
+
     debug = False
 
     def __init__(self, file):
         self.readConfigFile(file);
     
     def readConfigFile(self,configFile):
-        a = open(configFile, "r" )
-        b = json.loads(a.read())
+
+        try:
+            with open(configFile, "r") as file:
+                b = self.jsonChecker(file.read())
+        except FileNotFoundError:
+            print("File",configFile , "not found. Exiting.")
+            exit()
+
+         ##CB INFO
         self.cbHost = b["cb"]["host"]
         self.cbPort = b["cb"]["port"]
         self.cbAdminUsername = b["cb"]["adminUsername"]
@@ -38,22 +49,22 @@ class WORK():
             self.cbHostSecure = "https"
         else:
             self.cbHostSecure = "http"
-        self.sgHostUrl = b["sg"]["hostUrl"]
-        self.cbBucketName = b["cb"]["bucketName"]
-        self.cbScopeName = b["cb"]["scopeName"]
-        self.cbCollectionName = b["cb"]["collectionName"]
-        self.sgRbacUser = b["sg"]['rbacUser']
+        
+        ##CB RBAC USER FOR SYNC GATEWAY
         self.sgRbacUserPassword = b["sg"]['rbacUserPassword']
-        self.sgDbName = b["sg"]['dbName']
         self.sgAdminPort = b["sg"]['adminPort']
-        self.sgDbConfigJsonFile = b["sg"]['dbConfigJsonFile']
-        self.sgDbUserList = b["sg"]['dbUserList']
+
+        ##SG INFO
         if b["sg"]['hostSecure']:
             self.sgHostSecure = "https"
         else:
             self.sgHostSecure = "http"
+        self.sgHostUrl = b["sg"]["hostUrl"]
+        self.sgRbacUser = b["sg"]['rbacUser']
+        self.sgDbConfigJsonFile = b["sg"]['dbConfigJsonFile']
+
         self.debug = b['debug']
-        a.close()
+       
 
     def httpGet(self,url='',userName='',password='',retry=0):
 
@@ -249,9 +260,25 @@ class WORK():
         except Exception as e:
             return False
         
+    def readSgConfigFile(self):
+
+        try:
+            with open(self.sgDbConfigJsonFile,"r") as file :
+                b = self.jsonChecker(file.read())
+                self.sgConfigData = b
+                return b
+        except FileNotFoundError:
+            print("File", self.sgDbConfigJsonFile, "not found. Exiting.")
+            exit()
+        
     def makeCbBucket(self):
 
-        print("CB URL is:", "http://"+ self.cbHost+":"+self.cbPort)
+        print("CB URL is:", self.cbHostSecure+"://"+ self.cbHost+":"+self.cbPort)
+
+        sgDbFile = self.readSgConfigFile()
+        self.cbBucketName = sgDbFile["bucket"]
+        self.sgDbName = sgDbFile["name"]
+
         ### MAKE BUCKET
         urlBucket = self.cbHostSecure+"://"+ self.cbHost+":"+self.cbPort+"/pools/default/buckets/"+self.cbBucketName
         bucketExists = {}
@@ -269,44 +296,50 @@ class WORK():
             bucketConfig = { "name":self.cbBucketName, "ramQuota":100 , "bucketType":"couchbase", "storageBackend":"couchstore","maxTTL":0}
             self.httpPost(urlBucketPost,self.cbAdminUsername,self.cbAdminPassword,bucketConfig)
 
-        ### MAKE SCOPE
-        urlBucketScope = self.cbHostSecure+"://"+ self.cbHost+":"+self.cbPort+"/pools/default/buckets/"+self.cbBucketName+"/scopes"
-        scopeExists = None
-        try:         
-            scopeExists = self.httpGet(urlBucketScope,self.cbAdminUsername,self.cbAdminPassword)
-        except Exception as e:
-            print("No - Scope Name: ",self.cbScopeName)
+        for scope in sgDbFile["scopes"]:
+            #print(scope)
+            #print(sgDbFile["scopes"][scope]["collections"])
 
-        foundScopes = False
-        foundCollectionList = []
+            ### MAKE SCOPE
+            urlBucketScope = self.cbHostSecure+"://"+ self.cbHost+":"+self.cbPort+"/pools/default/buckets/"+self.cbBucketName+"/scopes"
+            scopeExists = None
+            try:         
+                scopeExists = self.httpGet(urlBucketScope,self.cbAdminUsername,self.cbAdminPassword)
+            except Exception as e:
+                print("No - Scope Name: ",scope)
 
-        for x in scopeExists["scopes"]:
-            if x["name"] == self.cbScopeName:
-                foundScopes = True
-                for y in x["collections"]:
-                    if y["name"] == self.cbCollectionName:
-                        foundCollectionList.append(self.cbCollectionName)
+            foundScopes = False
+            foundCollectionList = []
 
-        if foundScopes == True:
-            print("Yes - Scope Name: ",self.cbScopeName)
-        else:
-            #make the scope
-            print("Making Scope Name: ",self.cbScopeName)
-            urlBucketScopePost = self.cbHostSecure+"://"+ self.cbHost+":"+self.cbPort+"/pools/default/buckets/"+self.cbBucketName+"/scopes"
-            scopeConfig = { "name":self.cbScopeName}
-            self.httpPost(urlBucketScopePost,self.cbAdminUsername,self.cbAdminPassword,scopeConfig)
+            for x in scopeExists["scopes"]:
+                if x["name"] == scope:
+                    foundScopes = True
+                    for y in x["collections"]:
+                        foundCollectionList.append(y["name"])
+
+            if foundScopes == True:
+                print("Yes - Scope Name: ",scope)
+            else:
+                #make the scope
+                print("Making Scope Name: ",scope)
+                urlBucketScopePost = self.cbHostSecure+"://"+ self.cbHost+":"+self.cbPort+"/pools/default/buckets/"+self.cbBucketName+"/scopes"
+                scopeConfig = { "name":scope}
+                self.httpPost(urlBucketScopePost,self.cbAdminUsername,self.cbAdminPassword,scopeConfig)
             
+         
 
-        ### MAKE COLLECTION
-        
-        if self.cbCollectionName in foundCollectionList:
-            print("Yes - Collection Name: ",self.cbCollectionName)
-        else:
-            #make the collection
-            print("Making Collection Name: ",self.cbCollectionName)
-            urlBucketCollectionPost = self.cbHostSecure+"://"+ self.cbHost+":"+self.cbPort+"/pools/default/buckets/"+self.cbBucketName+"/scopes/"+self.cbScopeName+"/collections"
-            collectionConfig = { "name":self.cbCollectionName,"maxTTL":0}
-            self.httpPost(urlBucketCollectionPost,self.cbAdminUsername,self.cbAdminPassword,collectionConfig)
+            ### MAKE COLLECTION
+            for collection in sgDbFile["scopes"][scope]["collections"]:
+                if collection in foundCollectionList:
+                    print("Yes - Collection Name: ",collection)
+                else:
+                    #make the collection
+                    print("Making Collection Name: ",collection)
+                    urlBucketCollectionPost = self.cbHostSecure+"://"+ self.cbHost+":"+self.cbPort+"/pools/default/buckets/"+self.cbBucketName+"/scopes/"+scope+"/collections"
+                    collectionConfig = { "name":collection,"maxTTL":0}
+                    self.httpPost(urlBucketCollectionPost,self.cbAdminUsername,self.cbAdminPassword,collectionConfig)
+
+
 
     def makeRbacUser(self):
 
@@ -356,9 +389,13 @@ class WORK():
         
     def sgDbMake(self):
 
-        a = open(self.sgDbConfigJsonFile, "r" )
-        data = json.loads(a.read())
-        a.close()
+        try:
+            with open(self.sgDbConfigJsonFile, "r") as file:
+                data = self.jsonChecker(file.read())
+        except FileNotFoundError:
+            print("File",self.sgDbConfigJsonFile , "not found. Exiting.")
+            exit()
+
         data["name"] = self.sgDbName
         data["bucket"] = self.cbBucketName
         print("Config for SG DB: ",self.sgDbName," JSON: ",data)
@@ -370,19 +407,26 @@ class WORK():
             print(e)
 
     def sgMakeUsers(self):
-        
-        for x in self.sgDbUserList:
-            open("sgUser-"+x+".json", "r" )
-            rawJsonData = a.read()
-            a.close()
-            url = self.sgHostSecure+"://"+self.sgHostUrl+":"+self.sgAdminPort+"/"+self.sgDbName+"/_user/"+x
-            print("Making SG User:",x)
-            try:
-                req = self.httpPutJson(url,self.cbAdminUsername,self.cbAdminPassword, rawJsonData)
-                print(req)
-            except Exception as e:
-                print(e)
+        directory_path = os.getcwd()
+        pattern = "sgUser-"
+        for filename in os.listdir(directory_path):
+            if filename.startswith(pattern) and filename.endswith(".json"):
+                print("Opening file:", filename)
+                try:
+                    with open(filename, "r") as file:
+                        rawJsonData = file.read()
+                except FileNotFoundError:
+                    print("File", filename, "not found. Exiting.")
+                    exit()
 
+                username = filename[len(pattern):-len(".json")]
+                url = self.sgHostSecure+"://"+self.sgHostUrl+":"+self.sgAdminPort+"/"+self.sgDbName+"/_user/"+username
+                print("Making SG User:", username)
+                try:
+                    req = self.httpPutJson(url, self.cbAdminUsername, self.cbAdminPassword, rawJsonData)
+                    print(req)
+                except Exception as e:
+                    print(e)
 
     #------END OF CLASS WORK -------#
 
@@ -390,20 +434,25 @@ if __name__ == "__main__":
     
     config = str(sys.argv[1]) 
     a = WORK(config)
+
     ##Check If Bucket,Scope & Collection(s) Exists Already ELSE make them
     a.makeCbBucket()
+
     ##Check IF the CB RBAC for SG Exists ELSE make them
     a.makeRbacUser()
-    ##Check IF SG IS RUNNING
+
+    ##Check IF SG is Running
     sgRunning = a.sgProcessCheck()
     if sgRunning == False:
-        print("Try Again Later after Sync Gateway is reachable. Check your ports and your URL of Sync Gateway")
+        print("Try Again Later after Sync Gateway is reachable. Also check the Sync Gateway URL(host) , Ports in the config.json file")
         exit()
+    
+    ##Check IF SG DB is Running Already ELSE make them
     sgDbRunning = a.sgDbExists()
-
     if sgDbRunning == False:
         b = a.sgDbMake()
 
+    ##Check SG Users Already ELSE make them
     if sgDbRunning:
         a.sgMakeUsers()
     

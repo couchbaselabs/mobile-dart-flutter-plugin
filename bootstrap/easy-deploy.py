@@ -14,6 +14,7 @@ class WORK():
     cbAdminUsername = "Administrator"
     cbAdminPassword = "password"
     cbBucketName = "message"
+    
     ##CB RBAC USER FOR SYNC GATEWAY
     sgRbacUser = "syncGatewayUser"
     sgRbacUserPassword = "password"
@@ -59,7 +60,7 @@ class WORK():
             self.sgHostSecure = "https"
         else:
             self.sgHostSecure = "http"
-        self.sgHostUrl = b["sg"]["hostUrl"]
+        self.sgHostUrl = b["sg"]["host"]
         self.sgRbacUser = b["sg"]['rbacUser']
         self.sgDbConfigJsonFile = b["sg"]['dbConfigJsonFile']
 

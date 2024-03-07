@@ -7,7 +7,7 @@
     "hostSecure":false
     },
 "sg":{
-    "hostUrl":"localhost",
+    "host":"localhost",
     "adminPort":"4985",
     "rbacUser":"syncGatewayUser",
     "rbacUserPassword":"password",

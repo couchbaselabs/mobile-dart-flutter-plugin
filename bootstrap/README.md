@@ -10,7 +10,6 @@ This script makes it easy to setup and configue a demo of a Couchbase Mobile App
 <br/>
 <br/>
 <br/>
-<br/>
 
 # STEP 1 - UPDATE `easy-config.json` with your values IMAGE BELOW
 
@@ -18,13 +17,12 @@ This script makes it easy to setup and configue a demo of a Couchbase Mobile App
 <br/>
 <br/>
 <br/>
-<br/>
+
 
 # STEP 2 - UPDATE `sgDb.json` with your values IMAGE BELOW
 
 
 <img src="img/sgdb-diagram.png" title="image Title" />
-<br/>
 <br/>
 <br/>
 <br/>
@@ -39,7 +37,6 @@ Attached is a sample Sync Gateway config file to get started:  `basic-couchbase-
 ``` terminal
 python3 easy-config.py easy-config.json
 ```
-<br/>
 <br/>
 <br/>
 <br/>

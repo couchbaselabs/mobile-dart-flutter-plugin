@@ -8,7 +8,10 @@ environment:
 
 dependencies:
   cbl_flutter_platform_interface: 
-    path: '../cbl_flutter_platform_interface'
+    git:
+      url: https://github.com/couchbaselabs/mobile-dart-flutter-plugin.git
+      path: packages/cbl_flutter_platform_interface
+      ref: test
   flutter:
     sdk: flutter
 

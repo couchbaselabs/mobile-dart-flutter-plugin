@@ -9,7 +9,10 @@ environment:
 
 dependencies:
   cbl_flutter_platform_interface: 
-    path: '../cbl_flutter_platform_interface'
+    git:
+      url: https://github.com/couchbaselabs/mobile-dart-flutter-plugin.git
+      path: packages/cbl_flutter_platform_interface
+      ref: test
   cbl_libcblite_api: 3.1.3
   cbl_libcblitedart_api: 7.0.0
   flutter:

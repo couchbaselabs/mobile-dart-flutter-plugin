@@ -11,6 +11,7 @@ environment:
   flutter: '>=3.0.0'
 
 dependencies:
+  http: ^1.2.0
   cbl: 
     git:
       url: https://github.com/couchbaselabs/mobile-dart-flutter-plugin.git

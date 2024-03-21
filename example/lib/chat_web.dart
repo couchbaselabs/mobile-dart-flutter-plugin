@@ -19,12 +19,12 @@ class _ChatMessagesPageState extends State<ChatMessagesPage> {
   @override
   void initState() {
     super.initState();
-    _cblWebSocket.createCollection('message', 'chat');
+    _cblWebSocket.createCollection('data', 'testing');
 
     _cblWebSocket.connect(
-        url: 'ws://192.168.0.116:4984/examplechat',
-        username: 'bob',
-        password: '12345');
+        url: 'ws://18.217.234.161:4984/water',
+        username: 'test',
+        password: 'password');
 
     _cblWebSocket.startListening((message) {
       if ((message != null || message != '') && message is String) {
@@ -59,12 +59,12 @@ class _ChatMessagesPageState extends State<ChatMessagesPage> {
                   final item = messages[index];
                   return ChatMessageTile(
                     message: item.containsKey('doc')
-                        ? item['doc']['chatMessage']
+                        ? item['doc']['name']
                         : '-',
-                    createdAt: item.containsKey('doc')
-                        ? item['doc']['createdAt']
-                        : DateFormat("yyyy-MM-ddTHH:mm:ss.SSSSSS")
-                            .format(DateTime.now()),
+                    // createdAt: item.containsKey('doc')
+                    //     ? item['doc']['createdAt']
+                    //     : DateFormat("yyyy-MM-ddTHH:mm:ss.SSSSSS")
+                    //         .format(DateTime.now()),
                   );
                 },
               ),
@@ -80,10 +80,12 @@ class _ChatMessagesPageState extends State<ChatMessagesPage> {
 }
 
 class ChatMessageTile extends StatelessWidget {
-  const ChatMessageTile({this.message, required this.createdAt, super.key});
+  const ChatMessageTile({this.message, 
+  //required this.createdAt, 
+  super.key});
 
   final String? message;
-  final String createdAt;
+  // final String createdAt;
 
   @override
   Widget build(BuildContext context) => Padding(
@@ -91,11 +93,11 @@ class ChatMessageTile extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              DateFormat.yMd().add_jm().format(DateTime.parse(createdAt)),
-              style: Theme.of(context).textTheme.bodySmall,
-            ),
-            const SizedBox(height: 5),
+            // // Text(
+            // //   DateFormat.yMd().add_jm().format(DateTime.parse(createdAt)),
+            // //   style: Theme.of(context).textTheme.bodySmall,
+            // // ),
+            // const SizedBox(height: 5),
             Text(message ?? '')
           ],
         ),
@@ -138,11 +140,10 @@ class _ChatMessageFormState extends State<_ChatMessageForm> {
     }
 
     Map<String, Object> doc = {
-      'type': 'chatMessage',
-      'createdAt':
-          DateFormat("yyyy-MM-ddTHH:mm:ss.SSSSSS").format(DateTime.now()),
-      'userId': 'bob',
-      'chatMessage': message,
+      'name': '100k:0',
+      'age': 0,
+      'index': '0',
+      'body': message,
     };
 
     widget.cblWebSocket.saveDocument(doc);

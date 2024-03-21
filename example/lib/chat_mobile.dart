@@ -23,12 +23,12 @@ class _ChatMessagesPageState extends State<ChatMessagesPage> {
     late Replicator replicator;
     late ChatMessageRepository chatMessageRepository;
 
-    database = await Database.openAsync('examplechat');
+    database = await Database.openAsync('perfTesting');
 
-    chatMessages = await database.createCollection('message', 'chat');
+    chatMessages = await database.createCollection('data', 'testing');
 
     // update this with your device ip
-    final targetURL = Uri.parse('ws://192.168.0.116:4984/examplechat');
+    final targetURL = Uri.parse('ws://18.217.234.161:4984/water');
 
     final targetEndpoint = UrlEndpoint(targetURL);
 
@@ -41,9 +41,9 @@ class _ChatMessagesPageState extends State<ChatMessagesPage> {
     config.continuous = true;
 
     config.authenticator =
-        BasicAuthenticator(username: "bob", password: "12345");
+        BasicAuthenticator(username: "test", password: "password");
 
-    config.addCollection(chatMessages, CollectionConfiguration());
+    config.addCollection(chatMessages, CollectionConfiguration(channels: ['100k']));
 
     replicator = await Replicator.create(config);
 
@@ -91,10 +91,13 @@ class _ChatMessagesPageMobileState extends State<ChatMessagesPageMobile> {
   @override
   void initState() {
     super.initState();
-
     _chatMessagesSub =
         widget.repository!.allChatMessagesStream().listen((chatMessages) {
-      setState(() => _chatMessages = chatMessages);
+      setState(() { 
+  
+        _chatMessages = chatMessages;
+        print('Done called ${DateTime.now()}');
+        });
     });
   }
 
@@ -108,6 +111,16 @@ class _ChatMessagesPageMobileState extends State<ChatMessagesPageMobile> {
   Widget build(BuildContext context) => Scaffold(
         body: SafeArea(
           child: Column(children: [
+            Container(
+              padding: const EdgeInsets.all(20),
+              color: Theme.of(context).primaryColor,
+              child: Center(
+                child: Text(
+                  'Chat Count: ${_chatMessages.length}',
+                  
+                ),
+              ),
+            ),
             Expanded(
               child: ListView.builder(
                 reverse: true,
@@ -135,12 +148,12 @@ class ChatMessageTile extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              DateFormat.yMd().add_jm().format(chatMessage.createdAt),
-              style: Theme.of(context).textTheme.bodySmall,
-            ),
-            const SizedBox(height: 5),
-            Text(chatMessage.chatMessage.toString())
+            // Text(
+            //   DateFormat.yMd().add_jm().format(chatMessage.createdAt),
+            //   style: Theme.of(context).textTheme.bodySmall,
+            // ),
+            // const SizedBox(height: 5),
+            Text(chatMessage.name.toString())
           ],
         ),
       );
@@ -210,8 +223,7 @@ class _ChatMessageFormState extends State<_ChatMessageForm> {
 
 abstract class ChatMessage {
   String get id;
-  String get chatMessage;
-  DateTime get createdAt;
+  String get name;
 }
 
 class CblChatMessage extends ChatMessage {
@@ -220,9 +232,7 @@ class CblChatMessage extends ChatMessage {
   @override
   String get id => dict.documentId;
   @override
-  DateTime get createdAt => dict.value('createdAt')!;
-  @override
-  String get chatMessage => dict.value('chatMessage') ?? '-';
+  String get name => dict.value('name')!;
 }
 
 extension DictionaryDocumentIdExt on DictionaryInterface {
@@ -239,10 +249,10 @@ class ChatMessageRepository {
 
   Future<ChatMessage> createChatMessage(String message) async {
     final doc = MutableDocument({
-      'type': 'chatMessage',
-      'createdAt': DateTime.now(),
-      'userId': 'bob',
-      'chatMessage': message,
+      'name': '100k:0',
+      'age': 0,
+      'index': '0',
+      'body': message,
     });
     await collection.saveDocument(doc);
     return CblChatMessage(doc);
@@ -252,14 +262,11 @@ class ChatMessageRepository {
     final query = const QueryBuilder()
         .select(
           SelectResult.expression(Meta.id),
-          SelectResult.property('createdAt'),
-          SelectResult.property('chatMessage'),
+          SelectResult.property('name'),
         )
-        .from(DataSource.collection(collection))
-        .where(
-          Expression.property('type').equalTo(Expression.value('chatMessage')),
-        )
-        .orderBy(Ordering.property('createdAt'));
+        .from(DataSource.collection(collection));
+
+    
 
     return query.changes().asyncMap(
           (change) => change.results

@@ -2,7 +2,8 @@ class CblWebSocket {
   void connect(
       {required String url,
       required String username,
-      required String password}) {
+      required String password, 
+      required List<String> channels}) {
     throw UnimplementedError();
   }
 

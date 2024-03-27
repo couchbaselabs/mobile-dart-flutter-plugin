@@ -11,11 +11,11 @@ dependencies:
       url: https://github.com/couchbaselabs/mobile-dart-flutter-plugin.git
       path: packages/cbl
       ref: test
-  cbl_dart: 
-    git:
-      url: https://github.com/couchbaselabs/mobile-dart-flutter-plugin.git
-      path: packages/cbl_dart
-      ref: test
+  # cbl_dart: 
+  #   git:
+  #     url: https://github.com/couchbaselabs/mobile-dart-flutter-plugin.git
+  #     path: packages/cbl_dart
+  #     ref: test
   collection: ^1.16.0
   crypto: ^3.0.1
   http: ^1.0.0

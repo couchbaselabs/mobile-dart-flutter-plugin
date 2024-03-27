@@ -12,6 +12,7 @@ class ChatMessagesPage extends StatefulWidget {
 }
 
 class _ChatMessagesPageState extends State<ChatMessagesPage> {
+
   @override
   void initState() {
     super.initState();
@@ -28,7 +29,7 @@ class _ChatMessagesPageState extends State<ChatMessagesPage> {
     chatMessages = await database.createCollection('data', 'testing');
 
     // update this with your device ip
-    final targetURL = Uri.parse('ws://18.217.234.161:4984/water');
+    final targetURL = Uri.parse('ws://18.220.129.162:4984/water');
 
     final targetEndpoint = UrlEndpoint(targetURL);
 
@@ -43,7 +44,7 @@ class _ChatMessagesPageState extends State<ChatMessagesPage> {
     config.authenticator =
         BasicAuthenticator(username: "test", password: "password");
 
-    config.addCollection(chatMessages, CollectionConfiguration(channels: ['100k']));
+    config.addCollection(chatMessages, CollectionConfiguration(channels: ['100k:0']));
 
     replicator = await Replicator.create(config);
 
@@ -87,16 +88,23 @@ class ChatMessagesPageMobile extends StatefulWidget {
 class _ChatMessagesPageMobileState extends State<ChatMessagesPageMobile> {
   List<ChatMessage> _chatMessages = [];
   late StreamSubscription _chatMessagesSub;
+  final CblPerformanceLogger _cblPerformanceLogger = CblPerformanceLogger();
+  int count = 0;
 
   @override
   void initState() {
     super.initState();
+       _cblPerformanceLogger.start('wsPerformance');
+        
     _chatMessagesSub =
         widget.repository!.allChatMessagesStream().listen((chatMessages) {
+        
       setState(() { 
   
         _chatMessages = chatMessages;
-        print('Done called ${DateTime.now()}');
+        count = count + 1;
+          _cblPerformanceLogger.end('wsPerformance');
+          print(count);
         });
     });
   }

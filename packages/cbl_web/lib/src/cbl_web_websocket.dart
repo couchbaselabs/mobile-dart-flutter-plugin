@@ -14,11 +14,14 @@ class CblWebSocket {
   String? _password;
   String? _scope;
   String? _collections;
+  List<String> _channels = [];
 
   Stream<dynamic> connect(
       {required String url,
       required String username,
-      required String password}) {
+      required String password, 
+      required List<String> channels}) {
+    _channels = channels;
     _url = url;
     _username = username;
     _password = password;
@@ -29,10 +32,10 @@ class CblWebSocket {
     });
 
     final wsUrl = Uri.parse(
-        '$modifiedUrl.$_scope.$_collections/_changes?feed=websocket&include_docs=true');
+        '$modifiedUrl.$_scope.$_collections/_changes?feed=websocket&include_docs=true&channels=${_channels.join(',')}');
     _channel = WebSocketChannel.connect(wsUrl);
 
-    _channel.sink.add('{"include_docs":true}');
+    _channel.sink.add('{"include_docs":true,"channels":"${_channels.join(',')}"}');
 
     return _channel.stream;
   }

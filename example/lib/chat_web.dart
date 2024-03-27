@@ -13,6 +13,7 @@ class ChatMessagesPage extends StatefulWidget {
 class _ChatMessagesPageState extends State<ChatMessagesPage> {
   final CblWebSocket _cblWebSocket = CblWebSocket();
   final ScrollController _scrollController = ScrollController();
+  final CblPerformanceLogger _cblPerformanceLogger = CblPerformanceLogger();
 
   List<dynamic> messages = [];
 
@@ -20,18 +21,22 @@ class _ChatMessagesPageState extends State<ChatMessagesPage> {
   void initState() {
     super.initState();
     _cblWebSocket.createCollection('data', 'testing');
-
     _cblWebSocket.connect(
-        url: 'ws://18.217.234.161:4984/water',
+        channels: ['100k:0'],
+        url: 'ws://18.220.129.162:4984/water',
         username: 'test',
         password: 'password');
 
+    _cblPerformanceLogger.start('wsPerformancde');
+
     _cblWebSocket.startListening((message) {
       if ((message != null || message != '') && message is String) {
+     
         List<dynamic> decodedMsg = json.decode(message);
 
         setState(() {
           messages.addAll(decodedMsg);
+           _cblPerformanceLogger.end('wsPerformancde');
         });
 
         WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -50,6 +55,16 @@ class _ChatMessagesPageState extends State<ChatMessagesPage> {
   Widget build(BuildContext context) => Scaffold(
         body: SafeArea(
           child: Column(children: [
+            Container(
+              padding: const EdgeInsets.all(20),
+              color: Theme.of(context).primaryColor,
+              child: Center(
+                child: Text(
+                  'Chat Count: ${messages.length}',
+                  
+                ),
+              ),
+            ),
             Expanded(
               child: ListView.builder(
                 reverse: false,

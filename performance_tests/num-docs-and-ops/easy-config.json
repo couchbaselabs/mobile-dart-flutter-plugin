@@ -1,0 +1,18 @@
+{
+"cb":{
+    "host":"localhost",
+    "port":"8091",
+    "adminUsername":"Administrator",
+    "adminPassword":"password",
+    "hostSecure":false
+    },
+"sg":{
+    "host":"localhost",
+    "adminPort":"4985",
+    "rbacUser":"syncGatewayUser",
+    "rbacUserPassword":"password",
+    "dbConfigJsonFile":"sgDb.json",
+    "hostSecure":false
+    },
+"debug": false
+}

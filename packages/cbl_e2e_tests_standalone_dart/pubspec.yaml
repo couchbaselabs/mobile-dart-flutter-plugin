@@ -7,10 +7,7 @@ environment:
 dependencies:
   benchmark_harness: ^2.1.0
   cbl: 
-    git:
-      url: https://github.com/couchbaselabs/mobile-dart-flutter-plugin.git
-      path: packages/cbl
-      ref: GA
+    path: '../cbl'
   # cbl_dart: 
   #   git:
   #     url: https://github.com/couchbaselabs/mobile-dart-flutter-plugin.git

@@ -12,7 +12,6 @@ class ChatMessagesPage extends StatefulWidget {
 }
 
 class _ChatMessagesPageState extends State<ChatMessagesPage> {
-
   @override
   void initState() {
     super.initState();
@@ -44,7 +43,8 @@ class _ChatMessagesPageState extends State<ChatMessagesPage> {
     config.authenticator =
         BasicAuthenticator(username: "test", password: "password");
 
-    config.addCollection(chatMessages, CollectionConfiguration(channels: ['100k:0']));
+    config.addCollection(
+        chatMessages, CollectionConfiguration(channels: ['100k:0']));
 
     replicator = await Replicator.create(config);
 
@@ -94,18 +94,16 @@ class _ChatMessagesPageMobileState extends State<ChatMessagesPageMobile> {
   @override
   void initState() {
     super.initState();
-       _cblPerformanceLogger.start('wsPerformance');
-        
+    _cblPerformanceLogger.start('wsPerformance');
+
     _chatMessagesSub =
         widget.repository!.allChatMessagesStream().listen((chatMessages) {
-        
-      setState(() { 
-  
+      setState(() {
         _chatMessages = chatMessages;
         count = count + 1;
-          _cblPerformanceLogger.end('wsPerformance');
-          print(count);
-        });
+        _cblPerformanceLogger.end('wsPerformance');
+        print(count);
+      });
     });
   }
 
@@ -125,7 +123,6 @@ class _ChatMessagesPageMobileState extends State<ChatMessagesPageMobile> {
               child: Center(
                 child: Text(
                   'Chat Count: ${_chatMessages.length}',
-                  
                 ),
               ),
             ),
@@ -273,8 +270,6 @@ class ChatMessageRepository {
           SelectResult.property('name'),
         )
         .from(DataSource.collection(collection));
-
-    
 
     return query.changes().asyncMap(
           (change) => change.results

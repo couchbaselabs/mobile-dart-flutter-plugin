@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:cbl_flutter_multiplatform/cbl_flutter_multiplatform.dart';
-import 'package:example/chat_mobile.dart'
-    if (dart.library.html) 'package:example/chat_web.dart';
+import 'package:example/chat.dart';
 
 import 'package:flutter/material.dart';
 

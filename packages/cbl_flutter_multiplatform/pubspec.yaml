@@ -13,34 +13,16 @@ environment:
 dependencies:
   http: ^1.2.0
   cbl: 
-    git:
-      url: https://github.com/couchbaselabs/mobile-dart-flutter-plugin.git
-      path: packages/cbl
-      ref: GA
+    path: '../cbl'
   cbl_flutter: 
-    git:
-      url: https://github.com/couchbaselabs/mobile-dart-flutter-plugin.git
-      path: packages/cbl_flutter
-      ref: GA
+    path: '../cbl_flutter'
   cbl_flutter_ee: 
-    git:
-      url: https://github.com/couchbaselabs/mobile-dart-flutter-plugin.git
-      path: packages/cbl_flutter_ee
-      ref: GA
+    path: '../cbl_flutter_ee'
   cbl_flutter_web: 
-    git:
-      url: https://github.com/couchbaselabs/mobile-dart-flutter-plugin.git
-      path: packages/cbl_flutter_web
-      ref: GA
+    path: '../cbl_flutter_web'
   cbl_web: 
-    git:
-      url: https://github.com/couchbaselabs/mobile-dart-flutter-plugin.git
-      path: packages/cbl_web
-      ref: GA
+    path: '../cbl_web'
   cbl_performance_logger:
-    git:
-      url: https://github.com/couchbaselabs/mobile-dart-flutter-plugin.git
-      path: packages/cbl_performance_logger
-      ref: GA
+    path: '../cbl_performance_logger'
   flutter:
     sdk: flutter

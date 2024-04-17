@@ -8,6 +8,7 @@ export 'src/document/blob.dart';
 export 'src/document/dictionary.dart';
 export 'src/document/document.dart';
 export 'src/document/fragment.dart';
+export 'src/query.dart';
 export 'src/replication/authenticator.dart';
 export 'src/replication/configuration.dart';
 export 'src/replication/conflict_resolver.dart';

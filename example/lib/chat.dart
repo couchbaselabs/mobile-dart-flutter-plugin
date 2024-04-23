@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:cbl_flutter_multiplatform/cbl_flutter_multiplatform.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -23,12 +24,12 @@ class _ChatMessagesPageState extends State<ChatMessagesPage> {
     late Replicator replicator;
     late ChatMessageRepository chatMessageRepository;
 
-    database = await Database.openAsync('perfTesting');
+    database = await Database.openAsync('examplechat');
 
-    chatMessages = await database.createCollection('data', 'testing');
+    chatMessages = await database.createCollection('message', 'chat');
 
     // update this with your device ip
-    final targetURL = Uri.parse('ws://18.220.129.162:4984/water');
+    final targetURL = Uri.parse('ws://192.168.0.116:4984/examplechat');
 
     final targetEndpoint = UrlEndpoint(targetURL);
 
@@ -41,10 +42,9 @@ class _ChatMessagesPageState extends State<ChatMessagesPage> {
     config.continuous = true;
 
     config.authenticator =
-        BasicAuthenticator(username: "test", password: "password");
+        BasicAuthenticator(username: "bob", password: "12345");
 
-    config.addCollection(
-        chatMessages, CollectionConfiguration(channels: ['100k:0']));
+    config.addCollection(chatMessages);
 
     replicator = await Replicator.create(config);
 
@@ -57,6 +57,9 @@ class _ChatMessagesPageState extends State<ChatMessagesPage> {
     });
 
     await replicator.start();
+
+    // for web to pass the replicator configuration back to the collection
+    // chatMessages.replicatorConfig(config);
 
     chatMessageRepository = ChatMessageRepository(database, chatMessages);
 
@@ -153,12 +156,12 @@ class ChatMessageTile extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Text(
-            //   DateFormat.yMd().add_jm().format(chatMessage.createdAt),
-            //   style: Theme.of(context).textTheme.bodySmall,
-            // ),
-            // const SizedBox(height: 5),
-            Text(chatMessage.name.toString())
+            Text(
+              DateFormat.yMd().add_jm().format(chatMessage.createdAt),
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
+            const SizedBox(height: 5),
+            Text(chatMessage.chatMessage.toString())
           ],
         ),
       );
@@ -228,7 +231,8 @@ class _ChatMessageFormState extends State<_ChatMessageForm> {
 
 abstract class ChatMessage {
   String get id;
-  String get name;
+  String get chatMessage;
+  DateTime get createdAt;
 }
 
 class CblChatMessage extends ChatMessage {
@@ -236,8 +240,12 @@ class CblChatMessage extends ChatMessage {
   final DictionaryInterface dict;
   @override
   String get id => dict.documentId;
+
   @override
-  String get name => dict.value('name')!;
+  DateTime get createdAt => dict.value('createdAt')!;
+
+  @override
+  String get chatMessage => dict.value('chatMessage') ?? '-';
 }
 
 extension DictionaryDocumentIdExt on DictionaryInterface {
@@ -254,28 +262,38 @@ class ChatMessageRepository {
 
   Future<ChatMessage> createChatMessage(String message) async {
     final doc = MutableDocument({
-      'name': '100k:0',
-      'age': 0,
-      'index': '0',
-      'body': message,
+      'type': 'chatMessage',
+      'createdAt': DateTime.now(),
+      'userId': 'bob',
+      'chatMessage': message,
     });
     await collection.saveDocument(doc);
     return CblChatMessage(doc);
   }
 
   Stream<List<ChatMessage>> allChatMessagesStream() {
-    final query = const QueryBuilder()
-        .select(
-          SelectResult.expression(Meta.id),
-          SelectResult.property('name'),
-        )
-        .from(DataSource.collection(collection));
+    // this is needed because this is not available currently in web since we don't have
+    // database that handles the data of the web.
+    if (!kIsWeb) {
+      final query = const QueryBuilder()
+          .select(
+            SelectResult.expression(Meta.id),
+            SelectResult.property('createdAt'),
+            SelectResult.property('chatMessage'),
+          )
+          .from(DataSource.collection(collection))
+          .where(Expression.property('type')
+              .equalTo(Expression.value('chatMessage')))
+          .orderBy(Ordering.property('createdAt'));
 
-    return query.changes().asyncMap(
-          (change) => change.results
-              .asStream()
-              .map((result) => CblChatMessage(result))
-              .toList(),
-        );
+      return query.changes().asyncMap(
+            (change) => change.results
+                .asStream()
+                .map((result) => CblChatMessage(result))
+                .toList(),
+          );
+    } else {
+      return const Stream.empty();
+    }
   }
 }

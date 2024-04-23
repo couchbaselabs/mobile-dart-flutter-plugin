@@ -14,4 +14,5 @@ export 'src/replication/configuration.dart';
 export 'src/replication/conflict_resolver.dart';
 export 'src/replication/endpoint.dart';
 export 'src/replication/replicator.dart';
+export 'src/replication/replicator_change.dart';
 export 'src/support/utils.dart';

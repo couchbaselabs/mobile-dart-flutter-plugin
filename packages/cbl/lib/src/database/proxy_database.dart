@@ -12,6 +12,7 @@ import '../errors.dart';
 import '../fleece/decoder.dart';
 import '../fleece/dict_key.dart';
 import '../query/index/index.dart';
+import '../replication/configuration.dart';
 import '../service/cbl_service.dart';
 import '../service/cbl_service_api.dart';
 import '../service/cbl_worker.dart';
@@ -820,4 +821,7 @@ class ProxyCollection extends ProxyObject
     DocumentDelegate oldDelegate,
   ) =>
       ProxyDocumentDelegate.fromDelegate(oldDelegate);
+
+  @override
+  void replicatorConfig(ReplicatorConfiguration replicator) {}
 }

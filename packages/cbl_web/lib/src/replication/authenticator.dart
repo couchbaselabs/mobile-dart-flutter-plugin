@@ -1,5 +1,3 @@
-import '../support/utils.dart';
-
 abstract class Authenticator {}
 
 /// An authenticator for HTTP Basic (username/password) auth.
@@ -16,9 +14,5 @@ class BasicAuthenticator extends Authenticator {
   final String password;
 
   @override
-  String toString() => 'BasicAuthenticator('
-      'username: $username, '
-      // ignore: missing_whitespace_between_adjacent_strings
-      'password: ${redact(password)}'
-      ')';
+  String toString() => '$username|$password';
 }

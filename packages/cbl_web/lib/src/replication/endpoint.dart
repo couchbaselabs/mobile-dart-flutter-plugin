@@ -5,5 +5,5 @@ class UrlEndpoint extends Endpoint {
   final Uri url;
 
   @override
-  String toString() => 'UrlEndpoint($url)';
+  String toString() => '$url';
 }

@@ -267,6 +267,8 @@ abstract class Replicator implements ClosableResource {
     String documentId,
     Collection collection,
   );
+
+  void replicatorData(void Function(List<dynamic>) handleData);
 }
 
 /// A [Replicator] with a primarily synchronous API.

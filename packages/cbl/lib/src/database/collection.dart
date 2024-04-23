@@ -5,6 +5,7 @@ import 'dart:async';
 import '../document.dart';
 import '../errors.dart';
 import '../query/index/index.dart';
+import '../replication.dart';
 import '../support/listener_token.dart';
 import '../support/streams.dart';
 import 'collection_change.dart';
@@ -130,6 +131,9 @@ abstract class Collection {
 
   /// The total number of documents in this collection.
   FutureOr<int> get count;
+
+  /// For web
+  void replicatorConfig(ReplicatorConfiguration replicator);
 
   /// Returns the [Document] with the given [id], if it exists.
   FutureOr<Document?> document(String id);

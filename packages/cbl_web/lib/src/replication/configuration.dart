@@ -112,6 +112,10 @@ class ReplicatorConfiguration {
       ..maxAttemptWaitTime = maxAttemptWaitTime;
   }
 
+  String? _collectionName;
+  String? _scopeName;
+  List<String>? _channels = [];
+
   final Endpoint target;
 
   ReplicatorType replicatorType;
@@ -165,5 +169,21 @@ class ReplicatorConfiguration {
   void addCollection(
     Collection collection, [
     CollectionConfiguration? config,
-  ]) {}
+  ]) {
+    _collectionName = collection.name;
+    _scopeName = collection.scope;
+    _channels = config?.channels;
+  }
+
+  String get url => target.toString();
+
+  String get username => authenticator.toString().split('|').first;
+
+  String get password => authenticator.toString().split('|').last;
+
+  String? get collectionName => _collectionName;
+
+  String? get scopeName => _scopeName;
+
+  List<String>? get channels => _channels;
 }

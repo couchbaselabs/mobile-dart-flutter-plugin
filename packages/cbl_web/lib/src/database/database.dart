@@ -39,7 +39,6 @@ class AsyncDatabase implements Database {
 
   @override
   FutureOr<Collection> createCollection(String name,
-      [String scope = Scope.defaultName]) {
-    throw UnimplementedError();
-  }
+          [String scope = Scope.defaultName]) =>
+      CollectionImpl(name, scope);
 }

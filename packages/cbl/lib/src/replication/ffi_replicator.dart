@@ -400,6 +400,9 @@ class FfiReplicator
         ].join(', '),
         ')'
       ].join();
+
+  @override
+  void replicatorData(void Function(List p1) handleData) {}
 }
 
 extension on ReplicatorType {

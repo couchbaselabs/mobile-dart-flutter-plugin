@@ -426,6 +426,7 @@ extension on CBLReplicatorStatus {
           progressDocumentCount,
           progressComplete,
         ),
+        '',
         error?.toCouchbaseLiteException(),
       );
 }

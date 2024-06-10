@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:cbl_flutter_multiplatform/cbl_flutter_multiplatform.dart';
 import 'package:flutter/foundation.dart';
@@ -13,6 +14,9 @@ class ChatMessagesPage extends StatefulWidget {
 }
 
 class _ChatMessagesPageState extends State<ChatMessagesPage> {
+  List<dynamic> webMessages = [];
+  final ScrollController _scrollController = ScrollController();
+
   @override
   void initState() {
     super.initState();
@@ -54,13 +58,37 @@ class _ChatMessagesPageState extends State<ChatMessagesPage> {
       } else {
         print('Replicator is currently: ${change.status.activity.name}');
       }
+
+      if (kIsWeb) {
+        print("Web Data: ${change.status.webData}");
+
+        if (change.status.webData != null &&
+            change.status.webData != '' &&
+            change.status.webData is String) {
+          List<String> decodedMsg = json.decode(change.status.webData ?? '');
+
+          setState(() {
+            webMessages.addAll(decodedMsg);
+          });
+        }
+
+        // for scrolling effect in web
+
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (_scrollController.hasClients) {
+            _scrollController
+                .jumpTo(_scrollController.position.maxScrollExtent);
+          } else {
+            setState(() {});
+          }
+        });
+      }
     });
 
     await replicator.start();
 
-    // for web to pass the replicator configuration back to the collection
-    // chatMessages.replicatorConfig(config);
-
+// for web to pass the replicator configuration back to the collection
+    chatMessages.replicatorConfig(config);
     chatMessageRepository = ChatMessageRepository(database, chatMessages);
 
     return chatMessageRepository;
@@ -69,15 +97,61 @@ class _ChatMessagesPageState extends State<ChatMessagesPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: FutureBuilder<ChatMessageRepository>(
-          future: setup(),
-          builder: (context, snapshot) => snapshot.data == null
-              ? const Center(child: CircularProgressIndicator())
-              : ChatMessagesPageMobile(
-                  repository: snapshot.data,
-                )),
+      body: kIsWeb
+          ? ChatMessagesPageWeb(webMessages: webMessages)
+          : FutureBuilder<ChatMessageRepository>(
+              future: setup(),
+              builder: (context, snapshot) => snapshot.data == null
+                  ? const Center(child: CircularProgressIndicator())
+                  : ChatMessagesPageMobile(
+                      repository: snapshot.data,
+                    )),
     );
   }
+}
+
+class ChatMessagesPageWeb extends StatefulWidget {
+  final ScrollController? scrollController;
+  final List<dynamic>? webMessages;
+
+  const ChatMessagesPageWeb(
+      {this.scrollController, this.webMessages, super.key});
+
+  @override
+  State<ChatMessagesPageWeb> createState() => _ChatMessagesPageWebState();
+}
+
+class _ChatMessagesPageWebState extends State<ChatMessagesPageWeb> {
+  @override
+  Widget build(BuildContext context) => Scaffold(
+        body: SafeArea(
+          child: Column(children: [
+            Expanded(
+              child: ListView.builder(
+                reverse: false,
+                controller: widget.scrollController,
+                itemCount: widget.webMessages?.length,
+                itemBuilder: (context, index) {
+                  final item = widget.webMessages?[index];
+                  return ChatMessageTileWeb(
+                    message: item.containsKey('doc')
+                        ? item['doc']['chatMessage']
+                        : '-',
+                    createdAt: item.containsKey('doc')
+                        ? item['doc']['createdAt']
+                        : DateFormat("yyyy-MM-ddTHH:mm:ss.SSSSSS")
+                            .format(DateTime.now()),
+                  );
+                },
+              ),
+            ),
+            const Divider(height: 0),
+            _ChatMessageForm(
+              onSubmit: (message) {},
+            )
+          ]),
+        ),
+      );
 }
 
 class ChatMessagesPageMobile extends StatefulWidget {
@@ -136,7 +210,7 @@ class _ChatMessagesPageMobileState extends State<ChatMessagesPageMobile> {
                 itemBuilder: (context, index) {
                   final chatMessage =
                       _chatMessages[_chatMessages.length - 1 - index];
-                  return ChatMessageTile(chatMessage: chatMessage);
+                  return ChatMessageTileMobile(chatMessage: chatMessage);
                 },
               ),
             ),
@@ -147,8 +221,31 @@ class _ChatMessagesPageMobileState extends State<ChatMessagesPageMobile> {
       );
 }
 
-class ChatMessageTile extends StatelessWidget {
-  const ChatMessageTile({super.key, required this.chatMessage});
+class ChatMessageTileWeb extends StatelessWidget {
+  const ChatMessageTileWeb({this.message, required this.createdAt, super.key});
+
+  final String? message;
+  final String createdAt;
+
+  @override
+  Widget build(BuildContext context) => Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              DateFormat.yMd().add_jm().format(DateTime.parse(createdAt)),
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
+            const SizedBox(height: 5),
+            Text(message ?? '')
+          ],
+        ),
+      );
+}
+
+class ChatMessageTileMobile extends StatelessWidget {
+  const ChatMessageTileMobile({super.key, required this.chatMessage});
   final ChatMessage chatMessage;
   @override
   Widget build(BuildContext context) => Padding(

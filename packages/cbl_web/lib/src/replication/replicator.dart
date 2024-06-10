@@ -49,13 +49,16 @@ class ReplicatorProgress {
 ///
 /// {@category Replication}
 class ReplicatorStatus {
-  ReplicatorStatus(this.activity, this.progress, this.error);
+  ReplicatorStatus(this.activity, this.progress, this.webData, this.error);
 
   /// The current activity level of the [Replicator].
   final ReplicatorActivityLevel activity;
 
   /// The current progress of the [Replicator].
   final ReplicatorProgress progress;
+
+  /// This is only applicable in web
+  final dynamic webData;
 
   /// The current error of the [Replicator], if one has occurred.
   final Object? error;
@@ -100,13 +103,12 @@ abstract class Replicator {
   FutureOr<void> start({bool reset = false});
 
   FutureOr<void> stop();
-
-  void replicatorData(void Function(List<dynamic>) handleData);
 }
 
 class ReplicatorImpl extends Replicator {
   ReplicatorImpl();
 
+  // ignore: close_sinks
   final StreamController<dynamic> _streamController =
       StreamController<dynamic>();
   late Stream<dynamic> replicatorDataStream;
@@ -116,10 +118,13 @@ class ReplicatorImpl extends Replicator {
   FutureOr<dynamic> addChangeListener(
       void Function(ReplicatorChange) listener) {
     _streamSubscription = _channel.stream.listen((msg) {
-      listener.call(ReplicatorChangeImpl(
+      listener.call(
+        ReplicatorChangeImpl(
           ReplicatorImpl(),
           ReplicatorStatus(
-              ReplicatorActivityLevel.idle, ReplicatorProgress(1, 0), '')));
+              ReplicatorActivityLevel.idle, ReplicatorProgress(1, 0), '', msg),
+        ),
+      );
 
       return;
     });
@@ -136,16 +141,5 @@ class ReplicatorImpl extends Replicator {
   FutureOr<void> stop() {
     _streamSubscription.cancel();
     _channel.sink.close();
-  }
-
-  @override
-  void replicatorData(void Function(List<dynamic>) handleData) {
-    replicatorDataStream.listen((data) {
-      if ((data != null || data != '') && data is String) {
-        messages.add(json.decode(data));
-        print(messages);
-        handleData.call(messages);
-      }
-    });
   }
 }

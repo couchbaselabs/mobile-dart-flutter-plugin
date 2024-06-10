@@ -392,6 +392,7 @@ SerializationRegistry cblServiceSerializationRegistry() =>
         deserialize: (map, context) => ReplicatorStatus(
           context.deserializeAs(map['activity'])!,
           context.deserializeAs(map['progress'])!,
+          '',
           context.deserializePolymorphic(map['error']),
         ),
       )

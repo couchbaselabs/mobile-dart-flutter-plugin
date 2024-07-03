@@ -29,7 +29,7 @@ class _ChatMessagesPageState extends State<ChatMessagesPage> {
     chatMessages = await database.createCollection('message', 'chat');
 
     // update this with your device ip
-    final targetURL = Uri.parse('ws://192.168.0.116:4984/examplechat');
+    final targetURL = Uri.parse('ws://192.168.0.183:4984/examplechat');
 
     final targetEndpoint = UrlEndpoint(targetURL);
 

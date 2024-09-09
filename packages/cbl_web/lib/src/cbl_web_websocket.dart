@@ -15,6 +15,7 @@ class CblWebSocket {
   String? _scope;
   String? _collections;
   List<String> _channels = [];
+  Timer? _heartbeat;
 
   Stream<dynamic> connect(
       {required String url,
@@ -25,19 +26,44 @@ class CblWebSocket {
     _url = url;
     _username = username;
     _password = password;
+    
+   return _connectWebSocket();
+  }
+
+  Stream<dynamic> _connectWebSocket() {
     print('Websocket connected');
     RegExp regex = RegExp(r'^(ws|wss)://');
-    String modifiedUrl = url.replaceFirstMapped(regex, (match) {
-      return '${match.group(1)}://$username:$password@';
+    String modifiedUrl = _url!.replaceFirstMapped(regex, (match) {
+      return '${match.group(1)}://$_username:$_password@';
     });
 
     final wsUrl = Uri.parse(
-        '$modifiedUrl.$_scope.$_collections/_changes?feed=websocket&include_docs=true&channels=${_channels.join(',')}');
+        '$modifiedUrl.$_scope.$_collections/_changes?feed=websocket&heartbeat=3000&include_docs=true&channels=${_channels.join(',')}');
     _channel = WebSocketChannel.connect(wsUrl);
 
-    _channel.sink.add('{"include_docs":true,"channels":"${_channels.join(',')}"}');
+    _channel.sink.add('{"heartbeat":3000,"include_docs":true,"channels":"${_channels.join(',')}"}');
+
+    _startPingTimer();
 
     return _channel.stream;
+  }
+
+  void _startPingTimer() {
+    _heartbeat = Timer.periodic(Duration(seconds: 3), (timer) {
+        print('ping');
+        _channel.sink.add('ping'); 
+    });
+  }
+
+  void _stopPingTimer() {
+    _heartbeat?.cancel();
+  }
+
+  void _reconnect() {
+    _stopPingTimer();
+    Future.delayed(Duration(seconds: 5), () {
+      _connectWebSocket();
+    });
   }
 
   void createCollection(String collection, String scope) {
@@ -48,11 +74,21 @@ class CblWebSocket {
   void startListening(void Function(dynamic) handleMessage) {
     _streamSubscription = _channel.stream.listen((msg) {
       handleMessage.call(msg);
-    });
+    },
+    onDone: () {
+        print('WebSocket closed, attempting to reconnect...');
+        _reconnect();
+      },
+      onError: (error) {
+        print('WebSocket error: $error');
+        _reconnect();
+      },
+    );
   }
 
   void stopListening() {
     _streamSubscription.cancel();
+    _stopPingTimer();
   }
 
   void disconnect() {

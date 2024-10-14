@@ -64,13 +64,16 @@ class ReplicatorProgress {
 ///
 /// {@category Replication}
 class ReplicatorStatus {
-  ReplicatorStatus(this.activity, this.progress, this.error);
+  ReplicatorStatus(this.activity, this.progress, this.webData, this.error);
 
   /// The current activity level of the [Replicator].
   final ReplicatorActivityLevel activity;
 
   /// The current progress of the [Replicator].
   final ReplicatorProgress progress;
+
+  /// This is only applicable in web
+  final dynamic webData;
 
   /// The current error of the [Replicator], if one has occurred.
   final Object? error;
@@ -267,6 +270,8 @@ abstract class Replicator implements ClosableResource {
     String documentId,
     Collection collection,
   );
+
+  void replicatorData(void Function(List<dynamic>) handleData);
 }
 
 /// A [Replicator] with a primarily synchronous API.

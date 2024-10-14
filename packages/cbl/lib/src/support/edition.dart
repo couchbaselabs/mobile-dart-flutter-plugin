@@ -1,4 +1,4 @@
-import 'ffi.dart' if (dart.library.html) '';
+import 'ffi.dart' if (dart.library.html) 'web.dart';
 
 enum Edition {
   community,

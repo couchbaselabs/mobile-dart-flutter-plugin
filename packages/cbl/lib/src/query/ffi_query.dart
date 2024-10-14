@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'dart:collection';
-import 'dart:ffi' if (dart.library.html) '';
+import 'dart:ffi' if (dart.library.html) 'package:web_ffi/web_ffi.dart';
 
 import '../bindings.dart';
 import '../database/database_base.dart';
@@ -10,7 +10,8 @@ import '../fleece/containers.dart' as fl;
 import '../fleece/encoder.dart';
 import '../support/async_callback.dart';
 import '../support/errors.dart';
-import '../support/ffi.dart' if (dart.library.html) '';
+import '../support/ffi.dart'
+    if (dart.library.html) 'package:web_ffi/web_ffi.dart';
 import '../support/listener_token.dart';
 import '../support/native_object.dart';
 import '../support/streams.dart';

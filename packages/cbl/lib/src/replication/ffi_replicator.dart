@@ -1,7 +1,7 @@
 // ignore_for_file: deprecated_member_use_from_same_package
 
 import 'dart:async';
-import 'dart:ffi' if (dart.library.html) '';
+import 'dart:ffi' if (dart.library.html) 'package:web_ffi/web_ffi.dart';
 import 'dart:io';
 
 import 'package:collection/collection.dart';
@@ -16,7 +16,8 @@ import '../fleece/containers.dart' as fl;
 import '../support/async_callback.dart';
 import '../support/edition.dart';
 import '../support/errors.dart';
-import '../support/ffi.dart' if (dart.library.html) '';
+import '../support/ffi.dart'
+    if (dart.library.html) 'package:web_ffi/web_ffi.dart';
 import '../support/listener_token.dart';
 import '../support/resource.dart';
 import '../support/streams.dart';
@@ -399,6 +400,9 @@ class FfiReplicator
         ].join(', '),
         ')'
       ].join();
+
+  @override
+  void replicatorData(void Function(List p1) handleData) {}
 }
 
 extension on ReplicatorType {
@@ -422,6 +426,7 @@ extension on CBLReplicatorStatus {
           progressDocumentCount,
           progressComplete,
         ),
+        '',
         error?.toCouchbaseLiteException(),
       );
 }

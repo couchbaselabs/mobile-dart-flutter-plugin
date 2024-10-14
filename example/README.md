@@ -1,18 +1,33 @@
-# example
 
-A new Flutter project.
+### Application Configuration
 
-## Getting Started
+In the provided application, the following configuration parameters are essential. The IP address `192.168.0.116` serves as our designated host, while `examplechat` represents the Sync Gateway database name.
 
-This project is a starting point for a Flutter application.
+```
+ws://192.168.0.116:4984/examplechat
+```
 
-A few resources to get you started if this is your first Flutter project:
+Ensure the alignment of the scope `chat` within the example application and the designation of `message` is congruent with your chosen scope and collections configuration on the Couchbase server.
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+```
+.createCollection('message', 'chat')
+```
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Update the username and password in the application for secure access.
 
-TEST FROM JOHN
+```
+username: 'bob',
+password: '12345'
+```
+
+It is imperative to customize these values to align with your specific configuration requirements.
+
+### CORS Deactivation for Web Testing
+
+During the testing phase of the web application, it is advised to disable Cross-Origin Resource Sharing (CORS). Execute the following command when launching the web application:
+
+``` 
+flutter run -d chrome --web-browser-flag "--disable-web-security"
+```
+
+This command ensures the smooth operation of the web application by temporarily deactivating CORS, allowing for a comprehensive testing environment. Adjust the command as needed based on your specific testing requirements.

@@ -1,9 +1,10 @@
 import 'dart:async';
-import 'dart:ffi' if (dart.library.html) '';
+import 'dart:ffi' if (dart.library.html) 'package:web_ffi/web_ffi.dart';
 import 'dart:typed_data';
 
 import '../../bindings.dart';
-import '../../support/ffi.dart' if (dart.library.html) '';
+import '../../support/ffi.dart'
+    if (dart.library.html) 'package:web_ffi/web_ffi.dart';
 import '../decoder.dart';
 import '../encoder.dart';
 import 'array.dart';

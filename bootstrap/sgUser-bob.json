@@ -1,0 +1,13 @@
+{
+    "username":"bob",
+    "password":"12345",
+    "admin_roles":["user"],
+    "collection_access":{
+                    "chat":{
+                            "message":{
+                                         "admin_channels":["*"]
+                                        }
+                                }
+                        }
+                        
+}

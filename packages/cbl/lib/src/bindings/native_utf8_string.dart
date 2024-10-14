@@ -1,4 +1,4 @@
-import 'dart:ffi' if (dart.library.html) '';
+import 'dart:ffi' if (dart.library.html) 'package:web_ffi/web_ffi.dart';
 import 'dart:typed_data';
 
 /// A UTF-8 encoded string in external memory.

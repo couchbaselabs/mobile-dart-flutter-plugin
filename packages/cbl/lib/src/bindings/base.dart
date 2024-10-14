@@ -1,10 +1,11 @@
 // ignore: lines_longer_than_80_chars
 // ignore_for_file: avoid_redundant_argument_values, camel_case_types, avoid_private_typedef_functions
 
-import 'dart:ffi' if (dart.library.html) '';
+import 'dart:ffi' if (dart.library.html) 'package:web_ffi/web_ffi.dart';
 import 'dart:io' as io;
 
-import 'package:ffi/ffi.dart' if (dart.library.html) '';
+import 'package:ffi/ffi.dart'
+    if (dart.library.html) 'package:web_ffi/web_ffi.dart';
 
 import 'bindings.dart';
 import 'fleece.dart';

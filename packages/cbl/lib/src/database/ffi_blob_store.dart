@@ -5,7 +5,8 @@ import '../bindings.dart';
 import '../document/blob.dart';
 import '../fleece/containers.dart';
 import '../support/errors.dart';
-import '../support/ffi.dart' if (dart.library.html) '';
+import '../support/ffi.dart'
+    if (dart.library.html) 'package:web_ffi/web_ffi.dart';
 import '../support/native_object.dart';
 import '../support/resource.dart';
 import '../support/streams.dart';

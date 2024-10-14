@@ -1,14 +1,15 @@
 // ignore_for_file: avoid_equals_and_hash_code_on_mutable_classes
 
 import 'dart:collection';
-import 'dart:ffi' if (dart.library.html) '';
+import 'dart:ffi' if (dart.library.html) 'package:web_ffi/web_ffi.dart';
 import 'dart:typed_data';
 
 import 'package:collection/collection.dart';
 
 import '../bindings.dart';
 import '../support/errors.dart';
-import '../support/ffi.dart' if (dart.library.html) '';
+import '../support/ffi.dart'
+    if (dart.library.html) 'package:web_ffi/web_ffi.dart';
 import '../support/utils.dart';
 import 'decoder.dart';
 import 'encoder.dart';

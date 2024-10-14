@@ -1,0 +1,11 @@
+{
+    "username":"test",
+    "password":"password",
+    "collection_access":{
+                        "testing":{
+                                    "data":{
+                                                    "admin_channels":["1h","1k","10k","100k","1m"]
+                                                }
+                            }             
+                        }
+}

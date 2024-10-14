@@ -284,6 +284,9 @@ class ProxyReplicator extends ProxyObject
         ].join(', '),
         ')'
       ].join();
+
+  @override
+  void replicatorData(void Function(List p1) handleData) {}
 }
 
 CblServiceReplicationFilter _wrapReplicationFilter(

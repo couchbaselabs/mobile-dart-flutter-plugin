@@ -1,9 +1,9 @@
 import 'dart:async';
-import 'dart:ffi' if (dart.library.html) '';
+import 'dart:ffi' if (dart.library.html) 'package:web_ffi/web_ffi.dart';
 import 'dart:isolate';
 
 import '../bindings.dart';
-import 'ffi.dart' if (dart.library.html) '';
+import 'ffi.dart' if (dart.library.html) 'web.dart';
 
 /// Handler which is invoked to respond to a [AsyncCallback].
 ///

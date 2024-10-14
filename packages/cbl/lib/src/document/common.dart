@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'dart:ffi' if (dart.library.html) '';
+import 'dart:ffi' if (dart.library.html) 'package:web_ffi/web_ffi.dart';
 import 'dart:typed_data';
 
 import '../bindings.dart';
@@ -10,7 +10,8 @@ import '../fleece/decoder.dart';
 import '../fleece/dict_key.dart';
 import '../fleece/encoder.dart';
 import '../fleece/integration/integration.dart';
-import '../support/ffi.dart' if (dart.library.html) '';
+import '../support/ffi.dart'
+    if (dart.library.html) 'package:web_ffi/web_ffi.dart';
 import 'array.dart';
 import 'blob.dart';
 import 'dictionary.dart';

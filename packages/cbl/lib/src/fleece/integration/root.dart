@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'dart:ffi' if (dart.library.html) '';
+import 'dart:ffi' if (dart.library.html) 'package:web_ffi/web_ffi.dart';
 
 import '../../bindings.dart';
 import '../containers.dart';
